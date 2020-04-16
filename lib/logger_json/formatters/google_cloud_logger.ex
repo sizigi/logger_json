@@ -8,7 +8,7 @@ defmodule LoggerJSON.Formatters.GoogleCloudLogger do
 
   @behaviour LoggerJSON.Formatter
 
-  @processed_metadata_keys ~w[pid file line function module application]a
+  @processed_metadata_keys ~w[file line function module application]a
 
   # Severity levels can be found in Google Cloud Logger docs:
   # https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#LogSeverity

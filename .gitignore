@@ -43,3 +43,5 @@ rel/*/
 # Don't commit file uploads
 uploads/
 !uploads/.gitkeep
+
+.elixir_ls/
