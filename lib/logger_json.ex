@@ -287,7 +287,28 @@ defmodule LoggerJSON do
         apply(module, fun, [event]) <> "\n"
 
       json_encoder ->
-        [json_encoder.encode_to_iodata!(event) | "\n"]
+        try do
+          [json_encoder.encode_to_iodata!(event) | "\n"]
+        rescue
+          e ->
+            if function_exported?(Sentry, :capture_exception, 2) do
+              Sentry.capture_exception(e,
+                stacktrace: __STACKTRACE__,
+                extra: %{orig_message: msg, logger_data: inspect(event)}
+              )
+            end
+
+            new_event =
+              formatter.format_event(
+                :error,
+                "logger failed, original message: #{msg}",
+                ts,
+                [orig_message: msg, logger_error: inspect(e), logger_data: inspect(event)],
+                :all
+              )
+
+            [json_encoder.encode_to_iodata!(new_event) | "\n"]
+        end
     end
   end
 
